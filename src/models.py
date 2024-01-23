@@ -1,19 +1,29 @@
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy, relationship, ForeignKey
 
 db = SQLAlchemy()
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(80), unique=False, nullable=False)
-    is_active = db.Column(db.Boolean(), unique=False, nullable=False)
+class Usuario(db.Model):
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    name = db.Column(db.String(250), unique=False, nullable=False)
+    last_name = db.Column(db.String(250), unique=False, nullable=False)
+    email = db.Column(db.String(250), unique=True, nullable=False)
+    password = db.Column(db.String(250), unique=False, nullable=False)
+    subscription_date = db.Column(db.Integer, unique=False, nullable=True)
+    favorito = relationship('Favorito')
 
-    def __repr__(self):
-        return '<User %r>' % self.username
+class Personaje(db.Model):
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    name = db.Column(db.String(250), unique=False, nullable=False)
+    race = db.Column(db.String(250), unique=False, nullable=False)
+    favorito = relationship("favorito")
 
-    def serialize(self):
-        return {
-            "id": self.id,
-            "email": self.email,
-            # do not serialize the password, its a security breach
-        }
+class Planeta(db.Model):
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    name = db.Column(db.String(250), unique=False, nullable=False)
+    favorito = relationship("favorito")
+
+class Favorito(db.Model):
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    id_usuario= db.Column(db.Integer, ForeignKey("usuario.id"))
+    id_planeta= db.Column(db.Integer, ForeignKey("planeta.id"))
+    id_personaje= db.Column(db.Integer, ForeignKey("personaje.id"))
