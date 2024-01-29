@@ -9,11 +9,11 @@ class Usuario(db.Model):
     last_name = db.Column(db.String(250), unique=False, nullable=False)
     email = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), unique=False, nullable=False)
-    subscription_date = db.Column(db.Integer, unique=False, nullable=True)
+    subscription_date = db.Column(db.String(20), unique=False, nullable=True)
     favorito = db.relationship('Favorito') # agregar db.relationship
                                            # Favorito con mayuscula
 
-def __repr__(self):                     
+    def __repr__(self):                     
         return '<Usuario %r>' % self.email
 
     def serialize(self):
@@ -31,8 +31,8 @@ class Personaje(db.Model):
     race = db.Column(db.String(250), unique=False, nullable=False)
     favorito = db.relationship("Favorito")
 
-def __repr__(self):                     
-        return '<Personaje %r>' % self.email
+    def __repr__(self):                     
+        return '<Personaje %r>' % self.name
 
     def serialize(self):
         return {
@@ -44,10 +44,10 @@ def __repr__(self):
 class Planeta(db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True)
     name = db.Column(db.String(250), unique=False, nullable=False)
-    favorito = relationship("favorito")
+    favorito = db.relationship("Favorito")
 
-def __repr__(self):                    
-        return '<Planeta %r>' % self.email
+    def __repr__(self):                    
+        return '<Planeta %r>' % self.name
 
     def serialize(self):
         return {
@@ -62,10 +62,12 @@ class Favorito(db.Model):
     id_personaje= db.Column(db.Integer, db.ForeignKey("personaje.id"))
 
     def __repr__(self):                    
-        return '<Favorito %r>' % self.email
+        return '<Favorito %r>' % self.id
 
     def serialize(self):
         return {
+            "id": self.id,
+            "id_usuario": self.id_usuario,
             "id_planeta" : self.id_planeta,
             "id_personaje" : self.id_personaje
         }
